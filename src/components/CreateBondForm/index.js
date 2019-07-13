@@ -7,6 +7,23 @@ export default class CreateBondForm extends React.Component {
       membershipFee: null
     };
   }
+  componentDidMount() {
+    fetch(
+      'https://cxynbjn3wf.execute-api.eu-west-2.amazonaws.com/production/config'
+    ).then(res => {
+      if (res.ok) {
+        return res.json().then(res => {
+          this.setState({
+            ...this.state,
+            isFixedMembershipFee: res.fixed_membership_fee,
+            fixedMembershipFeeAmount: res.fixed_membership_fee_amount
+          });
+        });
+      } else {
+        console.log('NETWORK ERROR WHILE FETCHING');
+      }
+    });
+  }
   render() {
     return (
       <form>
