@@ -115,7 +115,7 @@ export default class CreateBondForm extends React.Component {
             ? parseInt(this.state.rentAmount)
             : parseInt(this.state.rentAmount) / 4;
         const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
-        const feeAmountPlusVat = (feeAmount * 1.2).toFixed();
+        const feeAmountPlusVat = `${(feeAmount * 1.2).toFixed()}`;
         this.setState({
           ...this.state,
           membershipFee: feeAmountPlusVat

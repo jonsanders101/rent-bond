@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export default function Confirmation(props) {
   const {
@@ -14,6 +15,7 @@ export default function Confirmation(props) {
       <h1>Congratulations on Confirming Your Rent Bond</h1>
       Postcode: {postcode}
       Membership Fee: {membershipFee}
+      <Link to="/">Return</Link>
     </div>
   );
 }
