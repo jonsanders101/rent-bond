@@ -4,8 +4,10 @@ export default class CreateBondForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      membershipFee: null
+      membershipFee: null,
+      rentAmount: ''
     };
+    this.handleRentAmountInput = this.handleRentAmountInput.bind(this);
   }
   componentDidMount() {
     fetch(
@@ -24,6 +26,10 @@ export default class CreateBondForm extends React.Component {
       }
     });
   }
+  handleRentAmountInput(e) {
+    e.preventDefault();
+    this.setState({ ...this.state, rentAmount: e.target.value });
+  }
   render() {
     return (
       <form>
@@ -33,7 +39,12 @@ export default class CreateBondForm extends React.Component {
         </div>
         <div className="form-item">
           <label htmlFor="rent-amount">How much do you pay in rent?</label>
-          <input type="text" id="rent-amount" />
+          <input
+            type="text"
+            id="rent-amount"
+            onChange={this.handleRentAmountInput}
+            value={this.state.rentAmount}
+          />
         </div>
         <div className="form-item">
           <label htmlFor="rent-basis">Is that per week or per month?</label>
