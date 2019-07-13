@@ -1,5 +1,8 @@
-import { combineReducers } from 'redux';
-
-const rootReducer = combineReducers({});
-
-export default rootReducer;
+export default (state, action) => {
+  switch (action.type) {
+    case 'SET_BOND_DETAILS':
+      return { ...state, ...action.value };
+    default:
+      return state;
+  }
+};
