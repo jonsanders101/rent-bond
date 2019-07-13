@@ -5,9 +5,11 @@ export default class CreateBondForm extends React.Component {
     super(props);
     this.state = {
       membershipFee: null,
-      rentAmount: ''
+      rentAmount: '',
+      postcode: ''
     };
     this.handleRentAmountInput = this.handleRentAmountInput.bind(this);
+    this.handleInput = this.handleInput.bind(this);
   }
   componentDidMount() {
     fetch(
@@ -30,25 +32,34 @@ export default class CreateBondForm extends React.Component {
     e.preventDefault();
     this.setState({ ...this.state, rentAmount: e.target.value });
   }
+  handleInput(e) {
+    e.preventDefault();
+    this.setState({ ...this.state, [e.target.id]: e.target.value });
+  }
   render() {
     return (
       <form>
         <div className="form-item">
           <label htmlFor="postcode">What's your postcode?</label>
-          <input type="text" id="postcode" />
-        </div>
-        <div className="form-item">
-          <label htmlFor="rent-amount">How much do you pay in rent?</label>
           <input
             type="text"
-            id="rent-amount"
+            id="postcode"
+            value={this.state.postcode}
+            onChange={this.handleInput}
+          />
+        </div>
+        <div className="form-item">
+          <label htmlFor="rentAmount">How much do you pay in rent?</label>
+          <input
+            type="text"
+            id="rentAmount"
             onChange={this.handleRentAmountInput}
             value={this.state.rentAmount}
           />
         </div>
         <div className="form-item">
-          <label htmlFor="rent-basis">Is that per week or per month?</label>
-          <select type="text" id="rent-basis">
+          <label htmlFor="rentBasis">Is that per week or per month?</label>
+          <select type="text" id="rentBasis">
             <option value="monthly">Monthly</option>
             <option value="weekly">Weekly</option>
           </select>
