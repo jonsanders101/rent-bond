@@ -1,3 +1,8 @@
 import React from 'react';
 
-export default () => <h1>New Application</h1>;
+export default () => (
+  <div>
+    <h1>Rent Bond</h1>
+    <h2>The New Way to Rent</h2>
+  </div>
+);
