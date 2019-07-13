@@ -4,7 +4,8 @@ import {
   MONTHLY_RENT_MINIMUM,
   MONTHLY_RENT_MAXIMUM,
   WEEKLY_RENT_MINIMUM,
-  WEEKLY_RENT_MAXIMUM
+  WEEKLY_RENT_MAXIMUM,
+  FEE_MINIMUM
 } from '../../constants';
 
 export default class CreateBondForm extends React.Component {
@@ -68,7 +69,6 @@ export default class CreateBondForm extends React.Component {
             input => input !== 'rentAmount'
           );
         }
-        return;
       default:
         return this.state.invalidInputs;
     }
@@ -81,10 +81,32 @@ export default class CreateBondForm extends React.Component {
       invalidInputs: this.getInvalidInputs(e)
     });
   }
-  handleCalculateBond() {}
+  handleCalculateBond(e) {
+    e.preventDefault();
+    if (this.state.invalidInputs.length === 0) {
+      // assuming that data has returned from fetch
+      if (this.state.isFixedMembershipFee) {
+        this.setState({
+          ...this.state,
+          membershipFee: this.state.fixedMembershipFeeAmount
+        });
+      } else {
+        const weeklyRent =
+          this.state.rentBasis === 'weekly'
+            ? parseInt(this.state.rentAmount)
+            : parseInt(this.state.rentAmount) / 4;
+        const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
+        const feeAmountPlusVat = feeAmount * 1.2;
+        this.setState({
+          ...this.state,
+          membershipFee: feeAmountPlusVat
+        });
+      }
+    }
+  }
   render() {
     return (
-      <form>
+      <form onSubmit={e => e.preventDefault()}>
         <div className="form-item">
           <label htmlFor="postcode">What's your postcode?</label>
           <input
