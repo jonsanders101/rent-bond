@@ -1,14 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   MEMBERSHIP_FEE_URL,
+  POST_BOND_URL,
   MONTHLY_RENT_MINIMUM,
   MONTHLY_RENT_MAXIMUM,
   WEEKLY_RENT_MINIMUM,
   WEEKLY_RENT_MAXIMUM,
   FEE_MINIMUM
 } from '../../constants';
+import { setBondDetails } from '../../actions';
 
-export default class CreateBondForm extends React.Component {
+class CreateBondForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,10 +19,12 @@ export default class CreateBondForm extends React.Component {
       rentAmount: '',
       postcode: '',
       invalidInputs: [],
-      rentBasis: 'monthly'
+      rentBasis: 'monthly',
+      isFormComplete: false
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
   componentDidMount() {
     fetch(MEMBERSHIP_FEE_URL).then(res => {
@@ -73,12 +78,19 @@ export default class CreateBondForm extends React.Component {
         return this.state.invalidInputs;
     }
   }
+  isFormComplete(invalidInputs) {
+    return (
+      invalidInputs.length === 0 && this.state.postcode && this.state.rentAmount
+    );
+  }
   handleInput(e) {
     e.preventDefault();
+    const invalidInputs = this.getInvalidInputs(e);
     this.setState({
       ...this.state,
       [e.target.id]: e.target.value,
-      invalidInputs: this.getInvalidInputs(e)
+      invalidInputs,
+      isFormComplete: this.isFormComplete(invalidInputs)
     });
   }
   handleCalculateBond(e) {
@@ -96,7 +108,7 @@ export default class CreateBondForm extends React.Component {
             ? parseInt(this.state.rentAmount)
             : parseInt(this.state.rentAmount) / 4;
         const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
-        const feeAmountPlusVat = feeAmount * 1.2;
+        const feeAmountPlusVat = (feeAmount * 1.2).toFixed();
         this.setState({
           ...this.state,
           membershipFee: feeAmountPlusVat
@@ -104,9 +116,33 @@ export default class CreateBondForm extends React.Component {
       }
     }
   }
+  handleFormSubmit(e) {
+    e.preventDefault();
+    const bondDetals = {
+      postcode: this.state.postcode,
+      membershipFee: this.state.feeAmount
+    };
+    this.props.setBondDetails(bondDetals);
+    fetch(POST_BOND_URL, {
+      method: 'POST',
+      body: bondDetals
+    }).then(res => {
+      if (res.ok) {
+        res.json().then(res => {
+          if (res.status === 'created') {
+            // cool, go to new page
+          } else {
+            // handle error
+          }
+        });
+      } else {
+        // handle network error
+      }
+    });
+  }
   render() {
     return (
-      <form onSubmit={e => e.preventDefault()}>
+      <form onSubmit={this.handleFormSubmit}>
         <div className="form-item">
           <label htmlFor="postcode">What's your postcode?</label>
           <input
@@ -140,12 +176,22 @@ export default class CreateBondForm extends React.Component {
             <option value="weekly">Weekly</option>
           </select>
         </div>
-        <button onClick={this.handleCalculateBond}>Calculate Bond</button>
+        <button
+          onClick={this.handleCalculateBond}
+          disabled={!this.state.isFormComplete}
+        >
+          Calculate Bond
+        </button>
         {this.state.membershipFee && (
           <div>Your membership will cost {this.state.membershipFee}</div>
         )}
-        <input type="submit" />
+        <input type="submit" disabled={!this.state.membershipFee} />
       </form>
     );
   }
 }
+
+export default connect(
+  () => ({}),
+  { setBondDetails }
+)(CreateBondForm);
