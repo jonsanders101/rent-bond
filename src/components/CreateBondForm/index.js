@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import {
   MEMBERSHIP_FEE_URL,
   POST_BOND_URL,
@@ -9,10 +8,9 @@ import {
   WEEKLY_RENT_MAXIMUM,
   FEE_MINIMUM
 } from '../../constants';
-import { setBondDetails } from '../../actions';
 import { Redirect } from 'react-router';
 
-class CreateBondForm extends React.Component {
+export default class CreateBondForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,12 +20,13 @@ class CreateBondForm extends React.Component {
       invalidInputs: [],
       rentBasis: 'monthly',
       isFormComplete: false,
-      formSubmitted: false
+      isFormSubmitted: false
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
+
   componentDidMount() {
     fetch(MEMBERSHIP_FEE_URL).then(res => {
       if (res.ok) {
@@ -43,16 +42,19 @@ class CreateBondForm extends React.Component {
       }
     });
   }
+
   getRentMinimum() {
     return this.state.rentBasis === 'monthly'
       ? MONTHLY_RENT_MINIMUM
       : WEEKLY_RENT_MINIMUM;
   }
+
   getRentMaximum() {
     return this.state.rentBasis === 'monthly'
       ? MONTHLY_RENT_MAXIMUM
       : WEEKLY_RENT_MAXIMUM;
   }
+
   getInvalidInputs(e) {
     switch (e.target.id) {
       case 'rentAmount':
@@ -80,11 +82,13 @@ class CreateBondForm extends React.Component {
         return this.state.invalidInputs;
     }
   }
+
   isFormComplete(invalidInputs) {
     return (
       invalidInputs.length === 0 && this.state.postcode && this.state.rentAmount
     );
   }
+
   handleInput(e) {
     e.preventDefault();
     const invalidInputs = this.getInvalidInputs(e);
@@ -95,6 +99,7 @@ class CreateBondForm extends React.Component {
       isFormComplete: this.isFormComplete(invalidInputs)
     });
   }
+
   handleCalculateBond(e) {
     e.preventDefault();
     if (this.state.invalidInputs.length === 0) {
@@ -118,6 +123,7 @@ class CreateBondForm extends React.Component {
       }
     }
   }
+
   handleFormSubmit(e) {
     e.preventDefault();
     fetch(POST_BOND_URL, {
@@ -130,18 +136,18 @@ class CreateBondForm extends React.Component {
       if (res.ok) {
         res.json().then(res => {
           if (res.status === 'created') {
-            this.setState({ ...this.state, formSubmitted: true });
+            this.setState({ ...this.state, isFormSubmitted: true });
           } else {
-            // handle error
+            console.log('ERROR CREATING BOND');
           }
         });
       } else {
-        // handle network error
+        console.log('NETWORK ERROR WHILE FETCHING');
       }
     });
   }
   render() {
-    if (this.state.formSubmitted) {
+    if (this.state.isFormSubmitted) {
       return (
         <Redirect
           to={{
@@ -205,8 +211,3 @@ class CreateBondForm extends React.Component {
     );
   }
 }
-
-export default connect(
-  () => ({}),
-  { setBondDetails }
-)(CreateBondForm);

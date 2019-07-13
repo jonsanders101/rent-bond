@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function Confirmation(props) {
   const {
@@ -16,3 +17,14 @@ export default function Confirmation(props) {
     </div>
   );
 }
+
+Confirmation.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      referer: PropTypes.shape({
+        postcode: PropTypes.string.isRequired,
+        membershipFee: PropTypes.string.isRequired
+      }).isRequired
+    }).isRequired
+  })
+};
