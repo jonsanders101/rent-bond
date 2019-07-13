@@ -8,7 +8,6 @@ export default class CreateBondForm extends React.Component {
       rentAmount: '',
       postcode: ''
     };
-    this.handleRentAmountInput = this.handleRentAmountInput.bind(this);
     this.handleInput = this.handleInput.bind(this);
   }
   componentDidMount() {
@@ -27,10 +26,6 @@ export default class CreateBondForm extends React.Component {
         console.log('NETWORK ERROR WHILE FETCHING');
       }
     });
-  }
-  handleRentAmountInput(e) {
-    e.preventDefault();
-    this.setState({ ...this.state, rentAmount: e.target.value });
   }
   handleInput(e) {
     e.preventDefault();
@@ -53,7 +48,7 @@ export default class CreateBondForm extends React.Component {
           <input
             type="text"
             id="rentAmount"
-            onChange={this.handleRentAmountInput}
+            onChange={this.handleInput}
             value={this.state.rentAmount}
           />
         </div>
