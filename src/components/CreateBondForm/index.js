@@ -6,9 +6,11 @@ export default class CreateBondForm extends React.Component {
     this.state = {
       membershipFee: null,
       rentAmount: '',
-      postcode: ''
+      postcode: '',
+      invalidInputs: []
     };
     this.handleInput = this.handleInput.bind(this);
+    this.handleCalculateBond = this.handleCalculateBond.bind(this);
   }
   componentDidMount() {
     fetch(
@@ -27,10 +29,49 @@ export default class CreateBondForm extends React.Component {
       }
     });
   }
+  getRentMinimum() {
+    return 11000;
+  }
+  getRentMaximum() {
+    return 866000;
+  }
+  getInvalidInputs(e) {
+    switch (e.target.id) {
+      case 'rentAmount':
+        const parsedRentAmount = parseInt(e.target.value);
+        if (
+          isNaN(parsedRentAmount) ||
+          parsedRentAmount < this.getRentMinimum() ||
+          parsedRentAmount > this.getRentMaximum()
+        ) {
+          this.setState({
+            ...this.state,
+            invalidInputs: [...this.state.invalidInputs, 'rentAmount']
+          });
+          if (this.state.invalidInputs.includes('rentAmount')) {
+            return this.state.invalidInputs;
+          } else {
+            return [...this.state.invalidInputs, 'rentAmount'];
+          }
+        } else {
+          return this.state.invalidInputs.filter(
+            input => input !== 'rentAmount'
+          );
+        }
+        return;
+      default:
+        return this.state.invalidInputs;
+    }
+  }
   handleInput(e) {
     e.preventDefault();
-    this.setState({ ...this.state, [e.target.id]: e.target.value });
+    this.setState({
+      ...this.state,
+      [e.target.id]: e.target.value,
+      invalidInputs: this.getInvalidInputs(e)
+    });
   }
+  handleCalculateBond() {}
   render() {
     return (
       <form>
@@ -51,21 +92,23 @@ export default class CreateBondForm extends React.Component {
             onChange={this.handleInput}
             value={this.state.rentAmount}
           />
+          {this.state.invalidInputs.includes('rentAmount') && (
+            <span>Please enter a valid rent amount.</span>
+          )}
         </div>
         <div className="form-item">
           <label htmlFor="rentBasis">Is that per week or per month?</label>
-          <select type="text" id="rentBasis" onChange={this.handleInput}>
-            <option
-              value="monthly"
-              selected={this.state.rentBasis === 'monthly'}
-            >
-              Monthly
-            </option>
-            <option value="weekly" selected={this.state.rentBasis === 'weekly'}>
-              Weekly
-            </option>
+          <select
+            type="text"
+            id="rentBasis"
+            onChange={this.handleInput}
+            value={this.state.rentBasis}
+          >
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
           </select>
         </div>
+        <button onClick={this.handleCalculateBond}>Calculate Bond</button>
         {this.state.membershipFee && (
           <div>Your membership will cost {this.state.membershipFee}</div>
         )}
