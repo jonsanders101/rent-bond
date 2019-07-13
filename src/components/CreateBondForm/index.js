@@ -2,7 +2,9 @@ import React from 'react';
 import {
   MEMBERSHIP_FEE_URL,
   MONTHLY_RENT_MINIMUM,
-  MONTHLY_RENT_MAXIMUM
+  MONTHLY_RENT_MAXIMUM,
+  WEEKLY_RENT_MINIMUM,
+  WEEKLY_RENT_MAXIMUM
 } from '../../constants';
 
 export default class CreateBondForm extends React.Component {
@@ -12,7 +14,8 @@ export default class CreateBondForm extends React.Component {
       membershipFee: null,
       rentAmount: '',
       postcode: '',
-      invalidInputs: []
+      invalidInputs: [],
+      rentBasis: 'monthly'
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
@@ -33,10 +36,14 @@ export default class CreateBondForm extends React.Component {
     });
   }
   getRentMinimum() {
-    return MONTHLY_RENT_MINIMUM;
+    return this.state.rentBasis === 'monthly'
+      ? MONTHLY_RENT_MINIMUM
+      : WEEKLY_RENT_MINIMUM;
   }
   getRentMaximum() {
-    return MONTHLY_RENT_MAXIMUM;
+    return this.state.rentBasis === 'monthly'
+      ? MONTHLY_RENT_MAXIMUM
+      : WEEKLY_RENT_MAXIMUM;
   }
   getInvalidInputs(e) {
     switch (e.target.id) {
