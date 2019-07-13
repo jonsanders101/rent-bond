@@ -54,9 +54,16 @@ export default class CreateBondForm extends React.Component {
         </div>
         <div className="form-item">
           <label htmlFor="rentBasis">Is that per week or per month?</label>
-          <select type="text" id="rentBasis">
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
+          <select type="text" id="rentBasis" onChange={this.handleInput}>
+            <option
+              value="monthly"
+              selected={this.state.rentBasis === 'monthly'}
+            >
+              Monthly
+            </option>
+            <option value="weekly" selected={this.state.rentBasis === 'weekly'}>
+              Weekly
+            </option>
           </select>
         </div>
         {this.state.membershipFee && (
