@@ -3,5 +3,12 @@ import thunk from 'redux-thunk';
 import reducer from '../reducers';
 
 export default () => {
-  return createStore(reducer, applyMiddleware(thunk));
+  return createStore(
+    reducer,
+    {
+      postcode: '',
+      membershipFee: ''
+    },
+    applyMiddleware(thunk)
+  );
 };

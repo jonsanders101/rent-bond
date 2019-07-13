@@ -10,6 +10,7 @@ import {
   FEE_MINIMUM
 } from '../../constants';
 import { setBondDetails } from '../../actions';
+import { Redirect } from 'react-router';
 
 class CreateBondForm extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class CreateBondForm extends React.Component {
       postcode: '',
       invalidInputs: [],
       rentBasis: 'monthly',
-      isFormComplete: false
+      isFormComplete: false,
+      formSubmitted: false
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
@@ -118,19 +120,17 @@ class CreateBondForm extends React.Component {
   }
   handleFormSubmit(e) {
     e.preventDefault();
-    const bondDetals = {
-      postcode: this.state.postcode,
-      membershipFee: this.state.feeAmount
-    };
-    this.props.setBondDetails(bondDetals);
     fetch(POST_BOND_URL, {
       method: 'POST',
-      body: bondDetals
+      body: {
+        postcode: this.state.postcode,
+        membershipFee: this.state.membershipFee
+      }
     }).then(res => {
       if (res.ok) {
         res.json().then(res => {
           if (res.status === 'created') {
-            // cool, go to new page
+            this.setState({ ...this.state, formSubmitted: true });
           } else {
             // handle error
           }
@@ -141,6 +141,21 @@ class CreateBondForm extends React.Component {
     });
   }
   render() {
+    if (this.state.formSubmitted) {
+      return (
+        <Redirect
+          to={{
+            pathname: '/confirmation',
+            state: {
+              referer: {
+                postcode: this.state.postcode,
+                membershipFee: this.state.membershipFee
+              }
+            }
+          }}
+        />
+      );
+    }
     return (
       <form onSubmit={this.handleFormSubmit}>
         <div className="form-item">

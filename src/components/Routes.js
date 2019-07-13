@@ -5,7 +5,6 @@ import Confirmation from './Confirmation';
 
 class Routes extends React.Component {
   render() {
-    console.log('called');
     return (
       <Switch>
         <Route exact path="/" component={Homepage} />

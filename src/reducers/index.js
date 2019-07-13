@@ -3,10 +3,12 @@ const initialState = {
   membershipFee: ''
 };
 
-export default (state = initialState, action) => {
+export default (state, action) => {
   switch (action.type) {
     case 'SET_BOND_DETAILS':
-      return { ...state, ...action.value };
+      console.log(action.value);
+      const newState = { ...state, ...action.value };
+      return newState;
     default:
       return state;
   }
