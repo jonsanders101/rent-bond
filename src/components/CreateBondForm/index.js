@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  MEMBERSHIP_FEE_URL,
+  MONTHLY_RENT_MINIMUM,
+  MONTHLY_RENT_MAXIMUM
+} from '../../constants';
 
 export default class CreateBondForm extends React.Component {
   constructor(props) {
@@ -13,9 +18,7 @@ export default class CreateBondForm extends React.Component {
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
   }
   componentDidMount() {
-    fetch(
-      'https://cxynbjn3wf.execute-api.eu-west-2.amazonaws.com/production/config'
-    ).then(res => {
+    fetch(MEMBERSHIP_FEE_URL).then(res => {
       if (res.ok) {
         return res.json().then(res => {
           this.setState({
@@ -30,10 +33,10 @@ export default class CreateBondForm extends React.Component {
     });
   }
   getRentMinimum() {
-    return 11000;
+    return MONTHLY_RENT_MINIMUM;
   }
   getRentMaximum() {
-    return 866000;
+    return MONTHLY_RENT_MAXIMUM;
   }
   getInvalidInputs(e) {
     switch (e.target.id) {
