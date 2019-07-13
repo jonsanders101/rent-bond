@@ -3,6 +3,9 @@ import React from 'react';
 export default class CreateBondForm extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      membershipFee: null
+    };
   }
   render() {
     return (
@@ -22,6 +25,9 @@ export default class CreateBondForm extends React.Component {
             <option value="weekly">Weekly</option>
           </select>
         </div>
+        {this.state.membershipFee && (
+          <div>Your membership will cost {this.state.membershipFee}</div>
+        )}
         <input type="submit" />
       </form>
     );
