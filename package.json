@@ -17,18 +17,12 @@
   "author": "Jon Sanders",
   "license": "MIT",
   "dependencies": {
-    "classnames": "^2.2.5",
-    "cookie": "^0.3.1",
     "express": "4.16.3",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
-    "react-router-redux": "^4.0.8",
-    "redux": "^4.0.0",
-    "redux-thunk": "^2.2.0"
+    "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",
@@ -73,6 +67,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonsanders101/my-react-boilerplate "
+    "url": "https://github.com/jonsanders101/rent-bond"
   }
 }
