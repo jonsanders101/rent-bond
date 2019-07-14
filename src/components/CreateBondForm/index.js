@@ -190,7 +190,7 @@ export default class CreateBondForm extends React.Component {
           </li>
           <li className="form-item">
             <label htmlFor="rentBasis">
-              Do you pay you rent weekly, or monthly?
+              Do you pay you rent weekly or monthly?
             </label>
             <select
               className="form-item__input"
@@ -214,6 +214,7 @@ export default class CreateBondForm extends React.Component {
               id="rentAmount"
               onChange={this.handleInput}
               value={this.state.rentAmount}
+              placeholder="£0.00"
             />
             {this.state.invalidInputs.includes('rentAmount') && (
               <span>Please enter a valid rent amount.</span>
