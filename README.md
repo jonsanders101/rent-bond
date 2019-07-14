@@ -1,6 +1,6 @@
-# Rent Bond
+# RentBond
 
-A web app for creating Rent Bonds.
+A web app for creating RentBonds.
 
 ## Local Setup
 

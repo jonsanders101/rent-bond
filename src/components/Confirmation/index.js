@@ -12,7 +12,7 @@ export default function Confirmation(props) {
   } = props;
   return (
     <div>
-      <h1>Congratulations on Confirming Your Rent Bond</h1>
+      <h1>Congratulations on Confirming Your RentBond</h1>
       Postcode: {postcode}
       Membership Fee: {membershipFee}
       <Link to="/">Return</Link>

@@ -19,7 +19,7 @@ webpack(config).run((err, stats) => {
   if (err || stats.hasErrors()) {
     console.log(err || stats);
   }
-  console.log('Finished building assets. Rent Bond is ready to view.');
+  console.log('Finished building assets. RentBond is ready to view.');
 });
 
 app.get(['*.js', '*.css'], (req, res, next) => {

@@ -16,7 +16,7 @@ const modeConsoleOutput = () => {
 
 console.log(
   'Starting'.green,
-  'Rent Bond'.green.bold,
+  'RentBond'.green.bold,
   'in'.green,
   modeConsoleOutput(),
   'mode...'.green
