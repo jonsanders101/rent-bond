@@ -83,20 +83,21 @@ export default class CreateBondForm extends React.Component {
     }
   }
 
-  isFormComplete(invalidInputs) {
-    return (
-      invalidInputs.length === 0 && this.state.postcode && this.state.rentAmount
-    );
+  isFormComplete(invalidInputs, state) {
+    return !!(invalidInputs.length === 0 && state.postcode && state.rentAmount);
   }
 
   handleInput(e) {
     e.preventDefault();
     const invalidInputs = this.getInvalidInputs(e);
-    this.setState({
+    const newState = {
       ...this.state,
       [e.target.id]: e.target.value,
-      invalidInputs,
-      isFormComplete: this.isFormComplete(invalidInputs)
+      invalidInputs
+    };
+    this.setState({
+      ...newState,
+      isFormComplete: this.isFormComplete(invalidInputs, newState)
     });
   }
 
@@ -163,10 +164,11 @@ export default class CreateBondForm extends React.Component {
       );
     }
     return (
-      <form onSubmit={this.handleFormSubmit}>
+      <form className="bond-form" onSubmit={this.handleFormSubmit}>
         <div className="form-item">
           <label htmlFor="postcode">What's your postcode?</label>
           <input
+            className="bond-form__postcode"
             type="text"
             id="postcode"
             value={this.state.postcode}
@@ -176,6 +178,7 @@ export default class CreateBondForm extends React.Component {
         <div className="form-item">
           <label htmlFor="rentAmount">How much do you pay in rent?</label>
           <input
+            className="bond-form__rent"
             type="text"
             id="rentAmount"
             onChange={this.handleInput}
