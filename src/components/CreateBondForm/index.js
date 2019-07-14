@@ -165,41 +165,45 @@ export default class CreateBondForm extends React.Component {
     }
     return (
       <form className="bond-form" onSubmit={this.handleFormSubmit}>
-        <div className="form-item">
-          <label htmlFor="postcode">What's your postcode?</label>
-          <input
-            className="bond-form__postcode"
-            type="text"
-            id="postcode"
-            value={this.state.postcode}
-            onChange={this.handleInput}
-          />
-        </div>
-        <div className="form-item">
-          <label htmlFor="rentAmount">How much do you pay in rent?</label>
-          <input
-            className="bond-form__rent"
-            type="text"
-            id="rentAmount"
-            onChange={this.handleInput}
-            value={this.state.rentAmount}
-          />
-          {this.state.invalidInputs.includes('rentAmount') && (
-            <span>Please enter a valid rent amount.</span>
-          )}
-        </div>
-        <div className="form-item">
-          <label htmlFor="rentBasis">Is that per week or per month?</label>
-          <select
-            type="text"
-            id="rentBasis"
-            onChange={this.handleInput}
-            value={this.state.rentBasis}
-          >
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </div>
+        <ol>
+          {' '}
+          <li className="form-item">
+            <label htmlFor="postcode">What's your postcode?</label>
+            <input
+              className="bond-form__postcode"
+              type="text"
+              id="postcode"
+              value={this.state.postcode}
+              onChange={this.handleInput}
+            />
+          </li>
+          <li className="form-item">
+            <label htmlFor="rentAmount">How much do you pay in rent?</label>
+            <input
+              className="bond-form__rent"
+              type="text"
+              id="rentAmount"
+              onChange={this.handleInput}
+              value={this.state.rentAmount}
+            />
+            {this.state.invalidInputs.includes('rentAmount') && (
+              <span>Please enter a valid rent amount.</span>
+            )}
+          </li>
+          <li className="form-item">
+            <label htmlFor="rentBasis">Is that per week or per month?</label>
+            <select
+              type="text"
+              id="rentBasis"
+              onChange={this.handleInput}
+              value={this.state.rentBasis}
+            >
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </li>
+        </ol>
+
         <button
           onClick={this.handleCalculateBond}
           disabled={!this.state.isFormComplete}
