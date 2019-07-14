@@ -20,16 +20,19 @@ const mockFetch = () => {
   );
 };
 
-const enterValidPostcode = wrapper => {
+const VALID_RENT = '45674';
+const VALID_POSTCODE = 'E8 2RG';
+
+const inputPostcode = (wrapper, postcode) => {
   wrapper.find('.bond-form__postcode').simulate('change', {
     preventDefault: () => {},
-    target: { id: 'postcode', value: 'E8 2RG' }
+    target: { id: 'postcode', value: postcode }
   });
 };
-const enterValidRent = wrapper => {
+const inputRent = (wrapper, rent) => {
   wrapper.find('.bond-form__rent').simulate('change', {
     preventDefault: () => {},
-    target: { id: 'rentAmount', value: '45674' }
+    target: { id: 'rentAmount', value: rent }
   });
 };
 
@@ -45,11 +48,22 @@ describe('<CreateBondForm />', () => {
     let wrapper;
     beforeEach(() => {
       wrapper = shallow(<CreateBondForm />);
-      enterValidPostcode(wrapper);
+      inputPostcode(wrapper, VALID_POSTCODE);
     });
     it('SHOULD set correct state', () => {
-      expect(wrapper.state('postcode')).toEqual('E8 2RG');
+      expect(wrapper.state('postcode')).toEqual(VALID_POSTCODE);
       expect(wrapper.state('invalidInputs')).toEqual([]);
+      expect(wrapper.state('isFormComplete')).toBe(false);
+    });
+  });
+  describe('GIVEN the user has entered an invalid input', () => {
+    let wrapper;
+    beforeEach(() => {
+      wrapper = shallow(<CreateBondForm />);
+      inputRent(wrapper, '2');
+    });
+    it('SHOULD set correct state', () => {
+      expect(wrapper.state('invalidInputs')).toEqual(['rentAmount']);
       expect(wrapper.state('isFormComplete')).toBe(false);
     });
   });
@@ -57,12 +71,12 @@ describe('<CreateBondForm />', () => {
     let wrapper;
     beforeEach(() => {
       wrapper = shallow(<CreateBondForm />);
-      enterValidPostcode(wrapper);
-      enterValidRent(wrapper);
+      inputPostcode(wrapper, VALID_POSTCODE);
+      inputRent(wrapper, VALID_RENT);
     });
     it('SHOULD set correct state', () => {
-      expect(wrapper.state('postcode')).toEqual('E8 2RG');
-      expect(wrapper.state('rentAmount')).toEqual('45674');
+      expect(wrapper.state('postcode')).toEqual(VALID_POSTCODE);
+      expect(wrapper.state('rentAmount')).toEqual(VALID_RENT);
       expect(wrapper.state('invalidInputs')).toEqual([]);
       expect(wrapper.state('isFormComplete')).toBe(true);
     });
