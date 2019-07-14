@@ -1,4 +1,6 @@
 import React from 'react';
+import postcode from 'postcode-validator';
+
 import {
   MEMBERSHIP_FEE_URL,
   POST_BOND_URL,
@@ -64,10 +66,6 @@ export default class CreateBondForm extends React.Component {
           parsedRentAmount < this.getRentMinimum() ||
           parsedRentAmount > this.getRentMaximum()
         ) {
-          this.setState({
-            ...this.state,
-            invalidInputs: [...this.state.invalidInputs, 'rentAmount']
-          });
           if (this.state.invalidInputs.includes('rentAmount')) {
             return this.state.invalidInputs;
           } else {
@@ -77,6 +75,16 @@ export default class CreateBondForm extends React.Component {
           return this.state.invalidInputs.filter(
             input => input !== 'rentAmount'
           );
+        }
+      case 'postcode':
+        if (!postcode.validate(e.target.value, 'UK')) {
+          if (this.state.invalidInputs.includes('postcode')) {
+            return this.state.invalidInputs;
+          } else {
+            return [...this.state.invalidInputs, 'postcode'];
+          }
+        } else {
+          return this.state.invalidInputs.filter(input => input !== 'postcode');
         }
       default:
         return this.state.invalidInputs;
@@ -176,6 +184,9 @@ export default class CreateBondForm extends React.Component {
               value={this.state.postcode}
               onChange={this.handleInput}
             />
+            {this.state.invalidInputs.includes('postcode') && (
+              <span>Please enter a valid UK postcode.</span>
+            )}
           </li>
           <li className="form-item">
             <label htmlFor="rentBasis">
