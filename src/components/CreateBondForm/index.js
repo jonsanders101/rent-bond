@@ -178,7 +178,24 @@ export default class CreateBondForm extends React.Component {
             />
           </li>
           <li className="form-item">
-            <label htmlFor="rentAmount">How much do you pay in rent?</label>
+            <label htmlFor="rentBasis">
+              Do you pay you rent weekly, or monthly?
+            </label>
+            <select
+              type="text"
+              id="rentBasis"
+              onChange={this.handleInput}
+              value={this.state.rentBasis}
+            >
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </li>
+          <li className="form-item">
+            <label htmlFor="rentAmount">
+              How much do you pay in rent per{' '}
+              {this.state.rentBasis.split('ly')[0]}?
+            </label>
             <input
               className="bond-form__rent"
               type="text"
@@ -189,18 +206,6 @@ export default class CreateBondForm extends React.Component {
             {this.state.invalidInputs.includes('rentAmount') && (
               <span>Please enter a valid rent amount.</span>
             )}
-          </li>
-          <li className="form-item">
-            <label htmlFor="rentBasis">Is that per week or per month?</label>
-            <select
-              type="text"
-              id="rentBasis"
-              onChange={this.handleInput}
-              value={this.state.rentBasis}
-            >
-              <option value="monthly">Monthly</option>
-              <option value="weekly">Weekly</option>
-            </select>
           </li>
         </ol>
 
