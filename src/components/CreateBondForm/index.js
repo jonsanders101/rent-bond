@@ -165,12 +165,12 @@ export default class CreateBondForm extends React.Component {
     }
     return (
       <form className="bond-form" onSubmit={this.handleFormSubmit}>
-        <ol>
+        <ol className="bond-form__inputs">
           {' '}
           <li className="form-item">
             <label htmlFor="postcode">What's your postcode?</label>
             <input
-              className="bond-form__postcode"
+              className="bond-form__postcode form-item__input"
               type="text"
               id="postcode"
               value={this.state.postcode}
@@ -182,6 +182,7 @@ export default class CreateBondForm extends React.Component {
               Do you pay you rent weekly, or monthly?
             </label>
             <select
+              className="form-item__input"
               type="text"
               id="rentBasis"
               onChange={this.handleInput}
@@ -197,7 +198,7 @@ export default class CreateBondForm extends React.Component {
               {this.state.rentBasis.split('ly')[0]}?
             </label>
             <input
-              className="bond-form__rent"
+              className="bond-form__rent form-item__input"
               type="text"
               id="rentAmount"
               onChange={this.handleInput}
@@ -210,15 +211,18 @@ export default class CreateBondForm extends React.Component {
         </ol>
 
         <button
+          className="bond-form__calculate"
           onClick={this.handleCalculateBond}
           disabled={!this.state.isFormComplete}
         >
           Calculate Bond
         </button>
         {this.state.membershipFee && (
-          <div>Your membership will cost {this.state.membershipFee}</div>
+          <div>
+            Your membership will cost {this.state.membershipFee}{' '}
+            <input type="submit" disabled={!this.state.membershipFee} />
+          </div>
         )}
-        <input type="submit" disabled={!this.state.membershipFee} />
       </form>
     );
   }
