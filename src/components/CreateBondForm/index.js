@@ -1,5 +1,6 @@
 import React from 'react';
 import postcode from 'postcode-validator';
+import CurrencyInput from 'react-currency-input';
 
 import {
   MEMBERSHIP_FEE_URL,
@@ -27,6 +28,7 @@ export default class CreateBondForm extends React.Component {
     this.handleInput = this.handleInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleRentAmountInput = this.handleRentAmountInput.bind(this);
   }
 
   componentDidMount() {
@@ -155,6 +157,10 @@ export default class CreateBondForm extends React.Component {
       }
     });
   }
+  handleRentAmountInput(e, maskedValue, floatValue) {
+    e.preventDefault();
+    this.setState({ rentAmount: { floatValue, maskedValue } });
+  }
   render() {
     if (this.state.isFormSubmitted) {
       return (
@@ -208,13 +214,12 @@ export default class CreateBondForm extends React.Component {
               How much do you pay in rent per{' '}
               {this.state.rentBasis.split('ly')[0]}?
             </label>
-            <input
-              className="bond-form__rent form-item__input"
-              type="text"
+            <CurrencyInput
               id="rentAmount"
-              onChange={this.handleInput}
-              value={this.state.rentAmount}
-              placeholder="£0.00"
+              className="bond-form__rent form-item__input"
+              prefix="£"
+              onChangeEvent={this.handleRentAmountInput}
+              value={this.state.rentAmount.maskedValue}
             />
             {this.state.invalidInputs.includes('rentAmount') && (
               <span>Please enter a valid rent amount.</span>
