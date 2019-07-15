@@ -18,17 +18,18 @@ export default class CreateBondForm extends React.Component {
     super(props);
     this.state = {
       membershipFee: null,
-      rentAmount: '',
-      postcode: '',
-      invalidInputs: [],
+      rentAmount: { maskedValue: '0.00', floatValue: 0.0, isValid: undefined },
+      postcode: { postcodeValue: '', isValid: undefined },
       rentBasis: 'monthly',
       isFormComplete: false,
       isFormSubmitted: false
     };
-    this.handleInput = this.handleInput.bind(this);
+    this.handleGenericInput = this.handleGenericInput.bind(this);
     this.handleCalculateBond = this.handleCalculateBond.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleRentAmountInput = this.handleRentAmountInput.bind(this);
+    this.handlePostcodeInput = this.handlePostcodeInput.bind(this);
+    this.getIsFormComplete = this.getIsFormComplete.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +48,13 @@ export default class CreateBondForm extends React.Component {
     });
   }
 
+  componentDidUpdate() {
+    const isFormComplete = this.getIsFormComplete();
+    if (this.state.isFormComplete !== isFormComplete) {
+      this.setState({ isFormComplete });
+    }
+  }
+
   getRentMinimum() {
     return this.state.rentBasis === 'monthly'
       ? MONTHLY_RENT_MINIMUM
@@ -59,63 +67,51 @@ export default class CreateBondForm extends React.Component {
       : WEEKLY_RENT_MAXIMUM;
   }
 
-  getInvalidInputs(e) {
-    switch (e.target.id) {
-      case 'postcode':
-        if (!postcode.validate(e.target.value, 'UK')) {
-          if (this.state.invalidInputs.includes('postcode')) {
-            return this.state.invalidInputs;
-          } else {
-            return [...this.state.invalidInputs, 'postcode'];
-          }
-        } else {
-          return this.state.invalidInputs.filter(input => input !== 'postcode');
-        }
-      default:
-        return this.state.invalidInputs;
-    }
+  getIsAllInputValid() {
+    return this.state.postcode.isValid && this.state.rentAmount.isValid;
   }
 
-  isFormComplete(invalidInputs, state) {
-    return !!(invalidInputs.length === 0 && state.postcode && state.rentAmount);
+  getIsFormComplete() {
+    return !!(
+      this.getIsAllInputValid() &&
+      this.state.postcode.postcodeValue &&
+      this.state.rentAmount.floatValue
+    );
   }
 
-  handleInput(e) {
+  getIsRentAmountValid(rentAmount) {
+    return (
+      rentAmount > this.getRentMinimum() && rentAmount < this.getRentMaximum()
+    );
+  }
+  handleGenericInput(e) {
     e.preventDefault();
-    const invalidInputs = this.getInvalidInputs(e);
-    const newState = {
-      ...this.state,
-      [e.target.id]: e.target.value,
-      invalidInputs
-    };
     this.setState({
-      ...newState,
-      isFormComplete: this.isFormComplete(invalidInputs, newState)
+      [e.target.id]: e.target.value
     });
   }
 
   handleCalculateBond(e) {
-    e.preventDefault();
-    if (this.state.invalidInputs.length === 0) {
-      // assuming that data has returned from fetch
-      if (this.state.isFixedMembershipFee) {
-        this.setState({
-          ...this.state,
-          membershipFee: this.state.fixedMembershipFeeAmount
-        });
+    const calculateBond = ({
+      isFixedMembershipFee,
+      fixedMembershipFeeAmount,
+      rentBasis,
+      rentAmount
+    }) => {
+      if (isFixedMembershipFee) {
+        return fixedMembershipFeeAmount;
       } else {
         const weeklyRent =
-          this.state.rentBasis === 'weekly'
-            ? parseInt(this.state.rentAmount)
-            : parseInt(this.state.rentAmount) / 4;
+          rentBasis === 'weekly'
+            ? rentAmount.floatValue
+            : rentAmount.floatValue / 4;
         const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
-        const feeAmountPlusVat = `${(feeAmount * 1.2).toFixed()}`;
-        this.setState({
-          ...this.state,
-          membershipFee: feeAmountPlusVat
-        });
+        return (feeAmount * 1.2).toFixed(2);
       }
-    }
+    };
+    e.preventDefault();
+    // assuming that data has returned from fetch
+    this.setState({ membershipFee: calculateBond(this.state) });
   }
 
   handleFormSubmit(e) {
@@ -140,11 +136,6 @@ export default class CreateBondForm extends React.Component {
       }
     });
   }
-  getIsRentAmountValid(rentAmount) {
-    return (
-      rentAmount > this.getRentMinimum() && rentAmount < this.getRentMaximum()
-    );
-  }
   handleRentAmountInput(e, maskedValue, floatValue) {
     e.preventDefault();
     this.setState({
@@ -152,6 +143,15 @@ export default class CreateBondForm extends React.Component {
         floatValue,
         maskedValue,
         isValid: this.getIsRentAmountValid(floatValue)
+      }
+    });
+  }
+  handlePostcodeInput(e) {
+    e.preventDefault();
+    this.setState({
+      postcode: {
+        postcodeValue: e.target.value,
+        isValid: postcode.validate(e.target.value, 'UK')
       }
     });
   }
@@ -181,10 +181,10 @@ export default class CreateBondForm extends React.Component {
               className="bond-form__postcode form-item__input"
               type="text"
               id="postcode"
-              value={this.state.postcode}
-              onChange={this.handleInput}
+              value={this.state.postcode.postcodeValue}
+              onChange={this.handlePostcodeInput}
             />
-            {this.state.invalidInputs.includes('postcode') && (
+            {this.state.postcode.isValid === false && (
               <span>Please enter a valid UK postcode.</span>
             )}
           </li>
@@ -196,7 +196,7 @@ export default class CreateBondForm extends React.Component {
               className="form-item__input"
               type="text"
               id="rentBasis"
-              onChange={this.handleInput}
+              onChange={this.handleGenericInput}
               value={this.state.rentBasis}
             >
               <option value="monthly">Monthly</option>
