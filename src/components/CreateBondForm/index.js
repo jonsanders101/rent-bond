@@ -61,23 +61,6 @@ export default class CreateBondForm extends React.Component {
 
   getInvalidInputs(e) {
     switch (e.target.id) {
-      case 'rentAmount':
-        const parsedRentAmount = parseInt(e.target.value);
-        if (
-          isNaN(parsedRentAmount) ||
-          parsedRentAmount < this.getRentMinimum() ||
-          parsedRentAmount > this.getRentMaximum()
-        ) {
-          if (this.state.invalidInputs.includes('rentAmount')) {
-            return this.state.invalidInputs;
-          } else {
-            return [...this.state.invalidInputs, 'rentAmount'];
-          }
-        } else {
-          return this.state.invalidInputs.filter(
-            input => input !== 'rentAmount'
-          );
-        }
       case 'postcode':
         if (!postcode.validate(e.target.value, 'UK')) {
           if (this.state.invalidInputs.includes('postcode')) {
@@ -157,9 +140,20 @@ export default class CreateBondForm extends React.Component {
       }
     });
   }
+  getIsRentAmountValid(rentAmount) {
+    return (
+      rentAmount > this.getRentMinimum() && rentAmount < this.getRentMaximum()
+    );
+  }
   handleRentAmountInput(e, maskedValue, floatValue) {
     e.preventDefault();
-    this.setState({ rentAmount: { floatValue, maskedValue } });
+    this.setState({
+      rentAmount: {
+        floatValue,
+        maskedValue,
+        isValid: this.getIsRentAmountValid(floatValue)
+      }
+    });
   }
   render() {
     if (this.state.isFormSubmitted) {
@@ -221,7 +215,7 @@ export default class CreateBondForm extends React.Component {
               onChangeEvent={this.handleRentAmountInput}
               value={this.state.rentAmount.maskedValue}
             />
-            {this.state.invalidInputs.includes('rentAmount') && (
+            {this.state.rentAmount.isValid === false && (
               <span>Please enter a valid rent amount.</span>
             )}
           </li>
