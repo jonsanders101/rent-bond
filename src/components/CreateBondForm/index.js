@@ -233,8 +233,12 @@ export default class CreateBondForm extends React.Component {
             <span className="bond-cost__message">
               Your RentBond membership will cost
             </span>
-            {this.state.membershipFee}{' '}
+            <span className="bond-cost__message">
+              £{this.state.membershipFee}
+            </span>
+
             <input
+              className="bond-cost__create"
               type="submit"
               value="Create my RentBond"
               disabled={!this.state.membershipFee}
