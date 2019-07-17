@@ -236,10 +236,10 @@ export default class CreateBondForm extends React.Component {
               {'Your RentBond membership will cost '}
               <span className="bond-cost__price">
                 <CurrenctFormat
-                  displayType={'text'}
+                  displayType="text"
                   value={this.state.membershipFee}
                   thousandSeparator={true}
-                  prefix={'£'}
+                  prefix="£"
                 />
               </span>
             </span>
