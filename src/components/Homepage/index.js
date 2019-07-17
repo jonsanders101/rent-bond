@@ -1,12 +1,13 @@
 import React from 'react';
 import BasePage from '../BasePage';
 import CreateBondForm from '../CreateBondForm';
+import Headings from '../Headings';
 
-const Headings = () => (
-  <>
-    <h1 className="homepage__heading">RentBond</h1>,
-    <h2 className="homepage__sub-heading">A Friendlier Way to Rent</h2>
-  </>
+const HomepageHeadings = () => (
+  <Headings
+    headingText={'RentBond'}
+    subheadingText={'A Friendlier Way to Rent'}
+  />
 );
 
 const MainContent = () => (
@@ -19,4 +20,6 @@ const MainContent = () => (
   </>
 );
 
-export default () => <BasePage MainContent={MainContent} Headings={Headings} />;
+export default () => (
+  <BasePage MainContent={MainContent} Headings={HomepageHeadings} />
+);
