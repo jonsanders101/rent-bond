@@ -1,5 +1,5 @@
 import React from 'react';
-import postcode from 'postcode-validator';
+import postcode from 'postcode';
 import CurrencyInput from 'react-currency-input';
 import CurrenctFormat from 'react-currency-format';
 
@@ -153,7 +153,7 @@ export default class CreateBondForm extends React.Component {
     this.setState({
       postcode: {
         postcodeValue: e.target.value,
-        isValid: postcode.validate(e.target.value, 'UK')
+        isValid: postcode.isValid(e.target.value)
       }
     });
   }
@@ -165,7 +165,9 @@ export default class CreateBondForm extends React.Component {
             pathname: '/confirmation',
             state: {
               referer: {
-                postcode: this.state.postcode.postcodeValue,
+                postcode: postcode.toNormalised(
+                  this.state.postcode.postcodeValue
+                ),
                 membershipFee: this.state.membershipFee
               }
             }
@@ -243,7 +245,6 @@ export default class CreateBondForm extends React.Component {
                 />
               </span>
             </span>
-
             <input
               className="bond-cost__create"
               type="submit"
