@@ -39,8 +39,9 @@ export default class CreateBondForm extends React.Component {
         return res.json().then(res => {
           this.setState({
             ...this.state,
-            isFixedMembershipFee: res.fixed_membership_fee,
-            fixedMembershipFeeAmount: res.fixed_membership_fee_amount
+            //            isFixedMembershipFee: res.fixed_membership_fee,
+            isFixedMembershipFee: false,
+            fixedMembershipFeeAmount: res.fixed_membership_fee_amount / 100
           });
         });
       } else {
@@ -100,7 +101,7 @@ export default class CreateBondForm extends React.Component {
       rentAmount
     }) => {
       if (isFixedMembershipFee) {
-        return fixedMembershipFeeAmount;
+        return fixedMembershipFeeAmount.toFixed(2);
       } else {
         const weeklyRent =
           rentBasis === 'weekly'
@@ -164,7 +165,7 @@ export default class CreateBondForm extends React.Component {
             pathname: '/confirmation',
             state: {
               referer: {
-                postcode: this.state.postcode,
+                postcode: this.state.postcode.postcodeValue,
                 membershipFee: this.state.membershipFee
               }
             }
