@@ -1,6 +1,7 @@
 import React from 'react';
 import postcode from 'postcode-validator';
 import CurrencyInput from 'react-currency-input';
+import CurrenctFormat from 'react-currency-format';
 
 import {
   MEMBERSHIP_FEE_URL,
@@ -231,10 +232,15 @@ export default class CreateBondForm extends React.Component {
         {this.state.membershipFee && (
           <div className="bond-cost">
             <span className="bond-cost__message">
-              Your RentBond membership will cost
-            </span>
-            <span className="bond-cost__message">
-              £{this.state.membershipFee}
+              {'Your RentBond membership will cost '}
+              <span className="bond-cost__price">
+                <CurrenctFormat
+                  displayType={'text'}
+                  value={this.state.membershipFee}
+                  thousandSeparator={true}
+                  prefix={'£'}
+                />
+              </span>
             </span>
 
             <input
