@@ -106,7 +106,7 @@ export default class CreateBondForm extends React.Component {
       }
     };
     e.preventDefault();
-    // assuming that data has returned from fetch
+    // Assumes data has already been returned by fetchFixedMembershipFee
     this.setState({ membershipFee: calculateBond(this.state) });
   }
 
@@ -160,9 +160,8 @@ export default class CreateBondForm extends React.Component {
     return (
       <form className="bond-form" onSubmit={this.handleFormSubmit}>
         <ol className="bond-form__inputs">
-          {' '}
           <li className="form-item">
-            <label htmlFor="postcode">What's your postcode?</label>
+            <label htmlFor="postcode">{"What's your postcode?"}</label>
             <input
               className="bond-form__postcode form-item__input"
               type="text"
@@ -171,12 +170,12 @@ export default class CreateBondForm extends React.Component {
               onChange={this.handlePostcodeInput}
             />
             {this.state.postcode.isValid === false && (
-              <span>Please enter a valid UK postcode.</span>
+              <span>{'Please enter a valid UK postcode.'}</span>
             )}
           </li>
           <li className="form-item">
             <label htmlFor="rentBasis">
-              Do you pay you rent weekly or monthly?
+              {'Do you pay you rent weekly or monthly?'}
             </label>
             <select
               className="form-item__input"
@@ -185,13 +184,13 @@ export default class CreateBondForm extends React.Component {
               onChange={this.handleGenericInput}
               value={this.state.rentBasis}
             >
-              <option value="monthly">Monthly</option>
-              <option value="weekly">Weekly</option>
+              <option value="monthly">{'Monthly'}</option>
+              <option value="weekly">{'Weekly'}</option>
             </select>
           </li>
           <li className="form-item">
             <label htmlFor="rentAmount">
-              How much do you pay in rent per{' '}
+              {'How much do you pay in rent per '}
               {this.state.rentBasis.split('ly')[0]}?
             </label>
             <CurrencyInput
@@ -202,7 +201,7 @@ export default class CreateBondForm extends React.Component {
               value={this.state.rentAmount.maskedValue}
             />
             {this.state.rentAmount.isValid === false && (
-              <span>Please enter a valid rent amount.</span>
+              <span>{'Please enter a valid rent amount'}.</span>
             )}
           </li>
         </ol>
@@ -212,7 +211,7 @@ export default class CreateBondForm extends React.Component {
           onClick={this.handleCalculateBond}
           disabled={!this.state.isFormComplete}
         >
-          Calculate Bond
+          {'Calculate Bond'}
         </button>
         {this.state.membershipFee && (
           <div className="bond-cost">
