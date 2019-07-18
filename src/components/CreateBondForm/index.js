@@ -2,7 +2,7 @@ import React from 'react';
 import postcode from 'postcode';
 import CurrencyInput from 'react-currency-input';
 import CurrenctFormat from 'react-currency-format';
-import { fetchFixedMembershipFee, postRentBond } from '../requests';
+import { fetchFixedMembershipFee, postRentBond } from '../../requests';
 
 import {
   MONTHLY_RENT_MINIMUM,
@@ -170,7 +170,9 @@ export default class CreateBondForm extends React.Component {
               onChange={this.handlePostcodeInput}
             />
             {this.state.postcode.isValid === false && (
-              <span>{'Please enter a valid UK postcode.'}</span>
+              <span className="bond-form__error">
+                {'Please enter a valid UK postcode.'}
+              </span>
             )}
           </li>
           <li className="form-item">
@@ -201,7 +203,9 @@ export default class CreateBondForm extends React.Component {
               value={this.state.rentAmount.maskedValue}
             />
             {this.state.rentAmount.isValid === false && (
-              <span>{'Please enter a valid rent amount'}.</span>
+              <span className="bond-form__error">
+                {'Please enter a valid rent amount'}.
+              </span>
             )}
           </li>
         </ol>
