@@ -2,15 +2,17 @@ import React from 'react';
 import postcode from 'postcode';
 import CurrencyInput from 'react-currency-input';
 import CurrenctFormat from 'react-currency-format';
+import { fetchFixedMembershipFee } from '../requests';
 
 import {
-  MEMBERSHIP_FEE_URL,
   POST_BOND_URL,
   MONTHLY_RENT_MINIMUM,
   MONTHLY_RENT_MAXIMUM,
   WEEKLY_RENT_MINIMUM,
   WEEKLY_RENT_MAXIMUM,
-  FEE_MINIMUM
+  FEE_MINIMUM,
+  MONTHLY,
+  WEEKLY
 } from '../../constants';
 import { Redirect } from 'react-router';
 
@@ -21,7 +23,7 @@ export default class CreateBondForm extends React.Component {
       membershipFee: null,
       rentAmount: { maskedValue: '0.00', floatValue: 0.0, isValid: undefined },
       postcode: { postcodeValue: '', isValid: undefined },
-      rentBasis: 'monthly',
+      rentBasis: MONTHLY,
       isFormComplete: false,
       isFormSubmitted: false
     };
@@ -34,19 +36,12 @@ export default class CreateBondForm extends React.Component {
   }
 
   componentDidMount() {
-    fetch(MEMBERSHIP_FEE_URL).then(res => {
-      if (res.ok) {
-        return res.json().then(res => {
-          this.setState({
-            ...this.state,
-            //            isFixedMembershipFee: res.fixed_membership_fee,
-            isFixedMembershipFee: false,
-            fixedMembershipFeeAmount: res.fixed_membership_fee_amount / 100
-          });
-        });
-      } else {
-        console.log('NETWORK ERROR WHILE FETCHING');
-      }
+    fetchFixedMembershipFee(res => {
+      this.setState({
+        ...this.state,
+        isFixedMembershipFee: false,
+        fixedMembershipFeeAmount: res.fixed_membership_fee_amount / 100
+      });
     });
   }
 
@@ -58,13 +53,13 @@ export default class CreateBondForm extends React.Component {
   }
 
   getRentMinimum() {
-    return this.state.rentBasis === 'monthly'
+    return this.state.rentBasis === MONTHLY
       ? MONTHLY_RENT_MINIMUM
       : WEEKLY_RENT_MINIMUM;
   }
 
   getRentMaximum() {
-    return this.state.rentBasis === 'monthly'
+    return this.state.rentBasis === MONTHLY
       ? MONTHLY_RENT_MAXIMUM
       : WEEKLY_RENT_MAXIMUM;
   }
@@ -104,7 +99,7 @@ export default class CreateBondForm extends React.Component {
         return fixedMembershipFeeAmount.toFixed(2);
       } else {
         const weeklyRent =
-          rentBasis === 'weekly'
+          rentBasis === WEEKLY
             ? rentAmount.floatValue
             : rentAmount.floatValue / 4;
         const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
