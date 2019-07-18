@@ -2,10 +2,9 @@ import React from 'react';
 import postcode from 'postcode';
 import CurrencyInput from 'react-currency-input';
 import CurrenctFormat from 'react-currency-format';
-import { fetchFixedMembershipFee } from '../requests';
+import { fetchFixedMembershipFee, postRentBond } from '../requests';
 
 import {
-  POST_BOND_URL,
   MONTHLY_RENT_MINIMUM,
   MONTHLY_RENT_MAXIMUM,
   WEEKLY_RENT_MINIMUM,
@@ -113,23 +112,11 @@ export default class CreateBondForm extends React.Component {
 
   handleFormSubmit(e) {
     e.preventDefault();
-    fetch(POST_BOND_URL, {
-      method: 'POST',
-      body: {
-        postcode: this.state.postcode,
-        membershipFee: this.state.membershipFee
-      }
-    }).then(res => {
-      if (res.ok) {
-        res.json().then(res => {
-          if (res.status === 'created') {
-            this.setState({ ...this.state, isFormSubmitted: true });
-          } else {
-            console.log('ERROR CREATING BOND');
-          }
-        });
+    postRentBond(res => {
+      if (res.status === 'created') {
+        this.setState({ ...this.state, isFormSubmitted: true });
       } else {
-        console.log('NETWORK ERROR WHILE FETCHING');
+        console.log('ERROR CREATING BOND:', res.statusText);
       }
     });
   }
