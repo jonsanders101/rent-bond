@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic snapshot 1`] = `
+<div
+  className="basepage"
+>
+  <div
+    className="basepage__headings"
+  >
+    <headings />
+  </div>
+  <section
+    className="basepage__main"
+  >
+    <main />
+  </section>
+</div>
+`;
