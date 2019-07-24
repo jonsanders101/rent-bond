@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CreateBondForm /> SHOULD render form 1`] = `
+<form
+  className="bond-form"
+  onSubmit={[Function]}
+>
+  <ol
+    className="bond-form__inputs"
+  >
+    <li
+      className="form-item"
+    >
+      <label
+        htmlFor="postcode"
+      >
+        What's your postcode?
+      </label>
+      <input
+        className="bond-form__postcode form-item__input"
+        id="postcode"
+        onChange={[Function]}
+        type="text"
+        value=""
+      />
+    </li>
+    <li
+      className="form-item"
+    >
+      <label
+        htmlFor="rentBasis"
+      >
+        Do you pay you rent weekly or monthly?
+      </label>
+      <select
+        className="form-item__input"
+        id="rentBasis"
+        onChange={[Function]}
+        type="text"
+        value="monthly"
+      >
+        <option
+          value="monthly"
+        >
+          Monthly
+        </option>
+        <option
+          value="weekly"
+        >
+          Weekly
+        </option>
+      </select>
+    </li>
+    <li
+      className="form-item"
+    >
+      <label
+        htmlFor="rentAmount"
+      >
+        How much do you pay in rent per 
+        month
+        ?
+      </label>
+      <CurrencyInput
+        allowNegative={false}
+        autoFocus={false}
+        className="bond-form__rent form-item__input"
+        decimalSeparator="."
+        id="rentAmount"
+        inputType="text"
+        onChange={[Function]}
+        onChangeEvent={[Function]}
+        precision="2"
+        prefix="£"
+        selectAllOnFocus={false}
+        suffix=""
+        thousandSeparator=","
+        value="0.00"
+      />
+    </li>
+  </ol>
+  <button
+    className="bond-form__calculate"
+    disabled={true}
+    onClick={[Function]}
+  >
+    Calculate Bond
+  </button>
+</form>
+`;
