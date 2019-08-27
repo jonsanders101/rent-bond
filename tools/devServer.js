@@ -21,6 +21,10 @@ app.use(
 );
 app.use(require('webpack-hot-middleware')(compiler));
 
+app.get('/favicon.ico', function(req, res) {
+  res.sendFile(path.join(__dirname, '../src/assets/icon.png'));
+});
+
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '../src/index.html'));
 });

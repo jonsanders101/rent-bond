@@ -30,6 +30,10 @@ app.get(['*.js', '*.css'], (req, res, next) => {
 
 app.use(express.static('dist'));
 
+app.get('/favicon.ico', function(req, res) {
+  res.sendFile(path.join(__dirname, '../src/assets/icon.png'));
+});
+
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });

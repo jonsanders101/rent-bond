@@ -2,15 +2,16 @@ import React from 'react';
 import postcode from 'postcode';
 import CurrencyInput from 'react-currency-input';
 import CurrenctFormat from 'react-currency-format';
+import { fetchFixedMembershipFee, postRentBond } from '../../requests';
 
 import {
-  MEMBERSHIP_FEE_URL,
-  POST_BOND_URL,
   MONTHLY_RENT_MINIMUM,
   MONTHLY_RENT_MAXIMUM,
   WEEKLY_RENT_MINIMUM,
   WEEKLY_RENT_MAXIMUM,
-  FEE_MINIMUM
+  FEE_MINIMUM,
+  MONTHLY,
+  WEEKLY
 } from '../../constants';
 import { Redirect } from 'react-router';
 
@@ -21,7 +22,7 @@ export default class CreateBondForm extends React.Component {
       membershipFee: null,
       rentAmount: { maskedValue: '0.00', floatValue: 0.0, isValid: undefined },
       postcode: { postcodeValue: '', isValid: undefined },
-      rentBasis: 'monthly',
+      rentBasis: MONTHLY,
       isFormComplete: false,
       isFormSubmitted: false
     };
@@ -34,19 +35,12 @@ export default class CreateBondForm extends React.Component {
   }
 
   componentDidMount() {
-    fetch(MEMBERSHIP_FEE_URL).then(res => {
-      if (res.ok) {
-        return res.json().then(res => {
-          this.setState({
-            ...this.state,
-            //            isFixedMembershipFee: res.fixed_membership_fee,
-            isFixedMembershipFee: false,
-            fixedMembershipFeeAmount: res.fixed_membership_fee_amount / 100
-          });
-        });
-      } else {
-        console.log('NETWORK ERROR WHILE FETCHING');
-      }
+    fetchFixedMembershipFee(res => {
+      this.setState({
+        ...this.state,
+        isFixedMembershipFee: false,
+        fixedMembershipFeeAmount: res.fixed_membership_fee_amount / 100
+      });
     });
   }
 
@@ -58,13 +52,13 @@ export default class CreateBondForm extends React.Component {
   }
 
   getRentMinimum() {
-    return this.state.rentBasis === 'monthly'
+    return this.state.rentBasis === MONTHLY
       ? MONTHLY_RENT_MINIMUM
       : WEEKLY_RENT_MINIMUM;
   }
 
   getRentMaximum() {
-    return this.state.rentBasis === 'monthly'
+    return this.state.rentBasis === MONTHLY
       ? MONTHLY_RENT_MAXIMUM
       : WEEKLY_RENT_MAXIMUM;
   }
@@ -104,7 +98,7 @@ export default class CreateBondForm extends React.Component {
         return fixedMembershipFeeAmount.toFixed(2);
       } else {
         const weeklyRent =
-          rentBasis === 'weekly'
+          rentBasis === WEEKLY
             ? rentAmount.floatValue
             : rentAmount.floatValue / 4;
         const feeAmount = weeklyRent < FEE_MINIMUM ? FEE_MINIMUM : weeklyRent;
@@ -112,29 +106,17 @@ export default class CreateBondForm extends React.Component {
       }
     };
     e.preventDefault();
-    // assuming that data has returned from fetch
+    // Assumes data has already been returned by fetchFixedMembershipFee
     this.setState({ membershipFee: calculateBond(this.state) });
   }
 
   handleFormSubmit(e) {
     e.preventDefault();
-    fetch(POST_BOND_URL, {
-      method: 'POST',
-      body: {
-        postcode: this.state.postcode,
-        membershipFee: this.state.membershipFee
-      }
-    }).then(res => {
-      if (res.ok) {
-        res.json().then(res => {
-          if (res.status === 'created') {
-            this.setState({ ...this.state, isFormSubmitted: true });
-          } else {
-            console.log('ERROR CREATING BOND');
-          }
-        });
+    postRentBond(res => {
+      if (res.status === 'created') {
+        this.setState({ ...this.state, isFormSubmitted: true });
       } else {
-        console.log('NETWORK ERROR WHILE FETCHING');
+        console.log('ERROR CREATING BOND:', res.statusText);
       }
     });
   }
@@ -178,9 +160,8 @@ export default class CreateBondForm extends React.Component {
     return (
       <form className="bond-form" onSubmit={this.handleFormSubmit}>
         <ol className="bond-form__inputs">
-          {' '}
           <li className="form-item">
-            <label htmlFor="postcode">What's your postcode?</label>
+            <label htmlFor="postcode">{"What's your postcode?"}</label>
             <input
               className="bond-form__postcode form-item__input"
               type="text"
@@ -189,12 +170,14 @@ export default class CreateBondForm extends React.Component {
               onChange={this.handlePostcodeInput}
             />
             {this.state.postcode.isValid === false && (
-              <span>Please enter a valid UK postcode.</span>
+              <span className="bond-form__error">
+                {'Please enter a valid UK postcode.'}
+              </span>
             )}
           </li>
           <li className="form-item">
             <label htmlFor="rentBasis">
-              Do you pay you rent weekly or monthly?
+              {'Do you pay you rent weekly or monthly?'}
             </label>
             <select
               className="form-item__input"
@@ -203,13 +186,13 @@ export default class CreateBondForm extends React.Component {
               onChange={this.handleGenericInput}
               value={this.state.rentBasis}
             >
-              <option value="monthly">Monthly</option>
-              <option value="weekly">Weekly</option>
+              <option value="monthly">{'Monthly'}</option>
+              <option value="weekly">{'Weekly'}</option>
             </select>
           </li>
           <li className="form-item">
             <label htmlFor="rentAmount">
-              How much do you pay in rent per{' '}
+              {'How much do you pay in rent per '}
               {this.state.rentBasis.split('ly')[0]}?
             </label>
             <CurrencyInput
@@ -220,7 +203,9 @@ export default class CreateBondForm extends React.Component {
               value={this.state.rentAmount.maskedValue}
             />
             {this.state.rentAmount.isValid === false && (
-              <span>Please enter a valid rent amount.</span>
+              <span className="bond-form__error">
+                {'Please enter a valid rent amount'}.
+              </span>
             )}
           </li>
         </ol>
@@ -230,7 +215,7 @@ export default class CreateBondForm extends React.Component {
           onClick={this.handleCalculateBond}
           disabled={!this.state.isFormComplete}
         >
-          Calculate Bond
+          {'Calculate Bond'}
         </button>
         {this.state.membershipFee && (
           <div className="bond-cost">

@@ -9,3 +9,5 @@ export const MONTHLY_RENT_MAXIMUM = 8660;
 export const WEEKLY_RENT_MINIMUM = 25;
 export const WEEKLY_RENT_MAXIMUM = 2000;
 export const FEE_MINIMUM = 120;
+export const MONTHLY = 'monthly';
+export const WEEKLY = 'weekly';
