@@ -17,7 +17,7 @@
   "author": "Jon Sanders",
   "license": "MIT",
   "dependencies": {
-    "express": "4.16.3",
+    "express": "4.18.2",
     "postcode": "^2.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
